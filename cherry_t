@@ -1,0 +1,37 @@
+import tweepy
+import json
+
+# Authenticate to Twitter
+auth = tweepy.OAuth1UserHandler("API_KEY", "API_SECRET_KEY", "ACCESS_TOKEN", "ACCESS_TOKEN_SECRET")
+api = tweepy.API(auth)
+
+# Function to join a Twitter Space
+def join_twitter_space(space_id):
+    try:
+        response = api.request('POST', f'1.1/spaces/join/{space_id}')
+        if response.status_code == 200:
+            print("Successfully joined Twitter Space with ID:", space_id)
+        else:
+            print("Failed to join Twitter Space:", response.text)
+    except tweepy.TweepError as e:
+        print("Error joining Twitter Space:", e)
+
+# Function to monitor conversations in a Twitter Space
+def monitor_twitter_space(space_id):
+    try:
+        response = api.request('GET', f'2/spaces/{space_id}/tweets')
+        if response.status_code == 200:
+            tweets = json.loads(response.text)
+            for tweet in tweets['data']:
+                print(tweet['text'])
+        else:
+            print("Failed to fetch tweets from Twitter Space:", response.text)
+    except tweepy.TweepError as e:
+        print("Error monitoring Twitter Space:", e)
+
+# Main function
+if _name_ == "_main_":
+    # Example usage
+    space_id = 'your_space_id'
+    join_twitter_space(space_id)
+    monitor_twitter_space(space_id)
